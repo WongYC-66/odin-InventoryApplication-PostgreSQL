@@ -7,7 +7,7 @@ block content
     ul
       each supplier in supplier_list
         li
-          a(href=supplier.url) #{supplier.name}
+          a(href=supplier.supplier_url) #{supplier.supplier_name}
           |  (reg. no. : #{supplier.registration_number})
 
   else

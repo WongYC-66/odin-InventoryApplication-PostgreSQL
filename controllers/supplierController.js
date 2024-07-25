@@ -1,5 +1,4 @@
-const Supplier = require("../models/supplier");
-const Item = require("../models/item");
+const db = require('../db/query.js')
 
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
@@ -7,19 +6,23 @@ const asyncHandler = require("express-async-handler");
 
 // Display list of all Suppliers.
 exports.supplier_list = asyncHandler(async (req, res, next) => {
-  const allSuppliers = await Supplier.find({}, "name registration_number")
-    .sort({ name: 1 })
-    .exec();
+  const allSuppliers = await db.getAllSupplier()
 
-  res.render("supplier_list", { title: "Supplier List", supplier_list: allSuppliers });
+  console.log(allSuppliers)
+
+  res.render("supplier_list",
+    {
+      title: "Supplier List",
+      supplier_list: allSuppliers
+    });
 });
 
 // Display detail page for a specific Supplier.
 exports.supplier_detail = asyncHandler(async (req, res, next) => {
   // Get details of supplier and all their items (in parallel)
   const [supplier, allItemsBySupplier] = await Promise.all([
-    Supplier.findById(req.params.id).exec(),
-    Item.find({ supplier: req.params.id }, "name quantity category").exec(),
+    db.getOneSupplierById(req.params.id),
+    db.getItemsBySupplierId(req.params.id),
   ]);
 
   if (supplier === null) {
@@ -71,12 +74,12 @@ exports.supplier_create_post = [
     const errors = validationResult(req);
 
     // Create Supplier object with escaped and trimmed data
-    const supplier = new Supplier({
-      name: req.body.name,
+    const supplier = {
+      supplier_name: req.body.name,
       address: req.body.address,
       contact_number: req.body.contact_number,
       registration_number: req.body.registration_number,
-    });
+    };
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
@@ -90,9 +93,9 @@ exports.supplier_create_post = [
       // Data from form is valid.
 
       // Save supplier.
-      await supplier.save();
+      const returnId = await db.saveOneSupplier(supplier);
       // Redirect to new supplier record.
-      res.redirect(supplier.url);
+      res.redirect(`/catalog/supplier/${returnId}`);
     }
   }),
 ];
@@ -101,8 +104,8 @@ exports.supplier_create_post = [
 exports.supplier_delete_get = asyncHandler(async (req, res, next) => {
   // Get details of suppliers and all their items (in parallel)
   const [supplier, allItemsBySupplier] = await Promise.all([
-    Supplier.findById(req.params.id).exec(),
-    Item.find({ supplier: req.params.id }, "name").exec(),
+    db.getOneSupplierById(req.params.id),
+    db.getItemsBySupplierId(req.params.id),
   ]);
 
   if (supplier === null) {
@@ -121,8 +124,8 @@ exports.supplier_delete_get = asyncHandler(async (req, res, next) => {
 exports.supplier_delete_post = asyncHandler(async (req, res, next) => {
   // Get details of supplier and all their items (in parallel)
   const [supplier, allItemsBySupplier] = await Promise.all([
-    Supplier.findById(req.params.id).exec(),
-    Item.find({ supplier: req.params.id }, "name").exec(),
+    db.getOneSupplierById(req.params.id),
+    db.getItemsBySupplierId(req.params.id),
   ]);
 
   if (allItemsBySupplier.length > 0) {
@@ -135,7 +138,7 @@ exports.supplier_delete_post = asyncHandler(async (req, res, next) => {
     return;
   } else {
     // Supplier has no items. Delete object and redirect to the list of suppliers.
-    await Supplier.findByIdAndDelete(req.body.supplierId);
+    await db.deleteOneSupplierById(req.params.id);
     res.redirect("/catalog/suppliers");
   }
 });
@@ -143,9 +146,9 @@ exports.supplier_delete_post = asyncHandler(async (req, res, next) => {
 // Display Supplier update form on GET.
 exports.supplier_update_get = asyncHandler(async (req, res, next) => {
   // Get item, suppliers and categories for form.
-  const supplier = await Supplier.findById(req.params.id).exec();
+  const supplier = await db.getOneSupplierById(req.params.id)
 
-  if (supplier === null) {
+  if (supplier.length  === 0) {
     // No results.
     const err = new Error("Supplier not found");
     err.status = 404;
@@ -188,13 +191,13 @@ exports.supplier_update_post = [
     const errors = validationResult(req);
 
     // Create a Supplier object with escaped/trimmed data and old id.
-    const supplier = new Supplier({
-      name: req.body.name,
+    const supplier = {
+      supplier_name: req.body.name,
       address: req.body.address,
       contact_number: req.body.contact_number,
       registration_number: req.body.registration_number,
-      _id: req.params.id, // This is required, or a new ID will be assigned!
-    });
+      supplier_id: req.params.id, // for query
+    };
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.
@@ -208,9 +211,10 @@ exports.supplier_update_post = [
 
     } else {
       // Data from form is valid. Update the record.
-      const updatedSupplier = await Supplier.findByIdAndUpdate(req.params.id, supplier, {});
+      const returnId = await db.updateOneSupplierById(req.params.id, supplier);
+      
       // Redirect to supplier detail page.
-      res.redirect(updatedSupplier.url);
+      res.redirect(`/catalog/supplier/${returnId}`);
     }
   }),
 ];

@@ -6,7 +6,7 @@ block content
   form(method='POST')
     div.form-group
       label(for='name') Name:
-      input#name.form-control(type='text', placeholder='ABC Sdn. Bhd. ...' name='name' required value=(undefined===supplier ? '' : supplier.name) )
+      input#name.form-control(type='text', placeholder='ABC Sdn. Bhd. ...' name='name' required value=(undefined===supplier ? '' : supplier.supplier_name) )
 
       label(for='address') Address:
       input#address.form-control(type='text', placeholder='5 Jalan Merdeka 30000 Selanglor ......' name='address' required value=(undefined===supplier ? '' : supplier.address) )

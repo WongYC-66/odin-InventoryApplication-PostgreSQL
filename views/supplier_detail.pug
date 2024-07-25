@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-  h1 Supplier : #{supplier.name}
+  h1 Supplier : #{supplier.supplier_name}
   p Address : #{supplier.address}
   p Contact No. : #{supplier.contact_number}
   p Reg. No. : #{supplier.registration_number}
@@ -14,13 +14,13 @@ block content
       div
         each item in supplier_items
           p 
-            a(href=item.url) #{item.name}
+            a(href=item.url) #{item.item_name}
             | - #{item.quantity} pcs
     else
       p This supplier has no items.
 
   hr
   p
-    a(href=supplier.url+'/delete') Delete supplier
+    a(href=supplier.supplier_url+'/delete') Delete supplier
   p
-    a(href=supplier.url+'/update') Update supplier
+    a(href=supplier.supplier_url+'/update') Update supplier

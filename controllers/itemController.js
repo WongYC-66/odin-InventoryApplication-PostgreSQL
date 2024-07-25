@@ -16,6 +16,7 @@ exports.index = asyncHandler(async (req, res, next) => {
     db.getAllSupplierCount(),
   ]);
 
+
   res.render("index", {
     title: "Catalogue Home",
     item_count: numItem,

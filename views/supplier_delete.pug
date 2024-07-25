@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-  h1 #{title}: #{supplier.name}
+  h1 #{title}: #{supplier.supplier_name}
   p= supplier.address
   p= supplier.contact_number
   p= supplier.registration_number
@@ -15,13 +15,13 @@ block content
       dl
         each item in supplier_items
           div
-            a(href=item.url) #{item.name}
+            a(href=item.url) #{item.item_name}
 
   else
     p Do you really want to delete this Supplier?
 
     form(method='POST')
       div.form-group
-        input#supplierId.form-control(type='hidden', name='supplierId', value=supplier._id )
+        input#supplierId.form-control(type='hidden', name='supplierId', value=supplier.supplier_id )
 
       button.btn.btn-primary(type='submit') Delete

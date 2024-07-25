@@ -1,3 +1,6 @@
+const db = require('../db/query.js')
+
+
 const Category = require("../models/category");
 const Item = require("../models/item");
 
@@ -6,9 +9,7 @@ const asyncHandler = require("express-async-handler");
 
 // Display list of all Category.
 exports.category_list = asyncHandler(async (req, res, next) => {
-  const allCategories = await Category.find({})
-    .sort({ name: 1 })
-    .exec();
+  const allCategories = await db.getAllCategory()
 
   res.render("category_list", { title: "Category List", category_list: allCategories });
 });
@@ -17,10 +18,8 @@ exports.category_list = asyncHandler(async (req, res, next) => {
 exports.category_detail = asyncHandler(async (req, res, next) => {
   // Get details of category and all associated items (in parallel)
   const [category, itemsInCategory] = await Promise.all([
-    Category.findById(req.params.id).exec(),
-    Item.find({ category: req.params.id }, "name supplier quantity")
-      .populate("supplier")
-      .exec(),
+    db.getOneCategoryById(req.params.id),
+    db.getItemsByCategoryId(req.params.id),
   ]);
   if (category === null) {
     // No results.
@@ -56,7 +55,7 @@ exports.category_create_post = [
     const errors = validationResult(req);
 
     // Create a category object with escaped and trimmed data.
-    const category = new Category({ name: req.body.name });
+    const category = { category_name: req.body.name };
 
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
@@ -69,16 +68,15 @@ exports.category_create_post = [
     } else {
       // Data from form is valid.
       // Check if Category with same name already exists.
-      const categoryExists = await Category.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
+      const categoryExists = await db.getOneCategoryByName(req.body.name)
       if (categoryExists) {
         // Category exists, redirect to its detail page.
-        res.redirect(categoryExists.url);
+        res.redirect(categoryExists.category_url);
       } else {
-        await category.save();
+        // not duplicate
+        const returnId = await db.saveOneCategory(category);
         // New category saved. Redirect to category detail page.
-        res.redirect(category.url);
+        res.redirect(`/catalog/category/${returnId}`);
       }
     }
   }),
@@ -88,11 +86,11 @@ exports.category_create_post = [
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
   // Get details of category and all their items (in parallel)
   const [category, allItemsByCategory] = await Promise.all([
-    Category.findById(req.params.id).exec(),
-    Item.find({ category: req.params.id }, "name").exec(),
+    db.getOneCategoryById(req.params.id),
+    db.getItemsByCategoryId(req.params.id),
   ]);
 
-  if (category === null) {
+  if (!category) {
     // No results.
     res.redirect("/catalog/categories");
   }
@@ -108,8 +106,8 @@ exports.category_delete_get = asyncHandler(async (req, res, next) => {
 exports.category_delete_post = asyncHandler(async (req, res, next) => {
   // Get details of category and all their items (in parallel)
   const [category, allItemsByCategory] = await Promise.all([
-    Category.findById(req.params.id).exec(),
-    Item.find({ category: req.params.id }, "name").exec(),
+    db.getOneCategoryById(req.params.id),
+    db.getItemsByCategoryId(req.params.id),
   ]);
 
   if (allItemsByCategory.length > 0) {
@@ -123,7 +121,7 @@ exports.category_delete_post = asyncHandler(async (req, res, next) => {
 
   } else {
     // Category has no items. Delete object and redirect to the list of category.
-    await Category.findByIdAndDelete(req.body.categoryId);
+    await db.deleteOneSupplierById(req.body.categoryId);
     res.redirect("/catalog/categories");
   }
 });
@@ -131,9 +129,9 @@ exports.category_delete_post = asyncHandler(async (req, res, next) => {
 // Display Category update form on GET.
 exports.category_update_get = asyncHandler(async (req, res, next) => {
   // Get category to form.
-  const category = await Category.findById(req.params.id).exec();
+  const category = await db.getOneCategoryById(req.params.id)
 
-  if (category === null) {
+  if (!category) {
     // No results.
     const err = new Error("Category not found");
     err.status = 404;
@@ -159,11 +157,11 @@ exports.category_update_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
-    // Create a Supplier object with escaped/trimmed data and old id.
-    const category = new Category({
-      name: req.body.name,
-      _id: req.params.id, // This is required, or a new ID will be assigned!
-    });
+    // Create a Category object with escaped/trimmed data and old id.
+    const category = { 
+      category_name: req.body.name,
+      category_id: req.params.id, // for query
+    };
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.
@@ -178,17 +176,16 @@ exports.category_update_post = [
     } else {
       // Data from form is valid.
       // Check if Category with same name already exists.
-      const categoryExists = await Category.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
+      const categoryExists = await db.getOneCategoryByName(req.body.name)
+
       if (categoryExists) {
         // Category exists, redirect to its detail page.
-        res.redirect(categoryExists.url);
+        res.redirect(categoryExists.category_url);
       } else {
         // No duplicate of category. Update the record.
-        const updatedCategory = await Category.findByIdAndUpdate(req.params.id, category, {});
+        const returnId = await db.updateOneCategoryById(req.params.id, category);
         // Redirect to category detail page.
-        res.redirect(updatedCategory.url);
+        res.redirect(`/catalog/category/${returnId}`);
       }
     }
   }),
