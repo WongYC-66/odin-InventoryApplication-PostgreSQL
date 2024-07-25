@@ -1,0 +1,26 @@
+extends layout
+
+block content
+
+  h1 Supplier : #{supplier.name}
+  p Address : #{supplier.address}
+  p Contact No. : #{supplier.contact_number}
+  p Reg. No. : #{supplier.registration_number}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h2(style='font-size: 1.5rem;') Items (#{supplier_items.length})
+    if supplier_items.length
+      div
+        each item in supplier_items
+          p 
+            a(href=item.url) #{item.name}
+            | - #{item.quantity} pcs
+    else
+      p This supplier has no items.
+
+  hr
+  p
+    a(href=supplier.url+'/delete') Delete supplier
+  p
+    a(href=supplier.url+'/update') Update supplier

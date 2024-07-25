@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+  p Total Registered Items = #{item_list.length}
+  if item_list.length
+    div(class="d-flex flex-wrap hover-shadow")
+      each item in item_list
+        a(href=item.url class="text-decoration-none") 
+          div(class="card m-2 ")
+            img(src=item.imgUrl, alt="No photo" class="card-img-top")
+            div(class="card-body m")
+              h5(class="card-ttle") #{item.name}
+              p #{item.category.name} $
+              p #{item.price} $
+
+  else
+    p There are no items.

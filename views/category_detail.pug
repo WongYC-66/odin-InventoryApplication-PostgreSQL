@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+  h1 Category: #{category.name}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h2(style='font-size: 1.5rem;') Found #{category_items.length} Items 
+    if category_items.length
+      div 
+        each item in category_items
+          div
+            a(href=item.url) #{item.name} - #{item.supplier.name}  (#{item.quantity} pcs)
+    else
+      p This cateogry has no items.
+  
+  hr
+  p
+    a(href=category.url+'/delete') Delete category
+  p
+    a(href=category.url+'/update') Update category

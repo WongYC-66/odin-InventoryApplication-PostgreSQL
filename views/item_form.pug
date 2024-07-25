@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST', encType='multipart/form-data')
+    div.form-group
+      label(for='name') Name:
+      input#name.form-control(type='text', placeholder='Name of item' name='name' required value=(undefined===item ? '' : item.name) )
+
+    div.form-group
+      label(for='supplier') Supplier:
+      select#supplier.form-control(name='supplier' required)
+        option(value='') --Please select an supplier--
+        for supplier in suppliers
+          if item && supplier._id.toString()=== item.supplier._id.toString()
+            option(value=supplier._id selected) #{supplier.name}
+          else
+            option(value=supplier._id) #{supplier.name}
+
+    div.form-group
+      label(for='quantity') Quantity:
+      input#quantity.form-control(type='text', placeholder='100...' name='quantity' value=(undefined===item ? '' : item.quantity) required)
+
+    div.form-group
+      label(for='price') Price:
+      input#price.form-control(type='text', placeholder='5000' name='price' value=(undefined===item ? '' : item.price) required)
+
+    div.form-group
+      label(for='category') Category:
+      select#category.form-control(name='category' required)
+        option(value='') --Please select an category--
+        for category in categories
+          if item && category._id.toString()=== item.category._id.toString()
+            option(value=category._id selected) #{category.name}
+          else
+            option(value=category._id) #{category.name}
+
+    div.form-group 
+      label(for='uploadImage') Photo: 
+      input#uploadImage.form-control(type='file', name='uploadImage')
+      label(for='imageUrl') Or image Url: 
+      input#imageUrl.form-control(type='url', name='imageUrl' value =(undefined===item? '' : item.imgUrl || ''))
+
+    hr
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

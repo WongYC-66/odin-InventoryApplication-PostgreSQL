@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  p Total Registered Suppliers = #{supplier_list.length}
+  if supplier_list.length
+    ul
+      each supplier in supplier_list
+        li
+          a(href=supplier.url) #{supplier.name}
+          |  (reg. no. : #{supplier.registration_number})
+
+  else
+    p There are no suppliers.

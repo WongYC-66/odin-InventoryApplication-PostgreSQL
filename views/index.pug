@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #[em XXX Stores], this is inventory application example for an e-commerce website with merchandise published online.
+
+  h2 Overall
+
+  p The catalogue has the following record counts:
+
+  ul
+    li #[strong Items:] !{item_count}
+    li #[strong Supplier:] !{supplier_count}
+    li #[strong Category:] !{category_count}

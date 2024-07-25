@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST')
+    div.form-group
+      label(for='name') Name:
+      input#name.form-control(type='text', placeholder='ABC Sdn. Bhd. ...' name='name' required value=(undefined===supplier ? '' : supplier.name) )
+
+      label(for='address') Address:
+      input#address.form-control(type='text', placeholder='5 Jalan Merdeka 30000 Selanglor ......' name='address' required value=(undefined===supplier ? '' : supplier.address) )
+
+      label(for='contact_number') Contact Number:
+      input#contact_number.form-control(type='text', placeholder='03-100-5000' name='contact_number' value=(undefined===supplier ? '' : supplier.contact_number) )
+
+      label(for='registration_number') Company Registration Number:
+      input#registration_number.form-control(type='text', placeholder='00100010' name='registration_number' value=(undefined===supplier ? '' : supplier.registration_number) )
+
+    hr
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
