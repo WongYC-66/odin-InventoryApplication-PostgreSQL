@@ -8,10 +8,10 @@ block content
       each item in item_list
         a(href=item.url class="text-decoration-none") 
           div(class="card m-2 ")
-            img(src=item.imgUrl, alt="No photo" class="card-img-top")
+            img(src=item.imgurl, alt="No photo" class="card-img-top")
             div(class="card-body m")
-              h5(class="card-ttle") #{item.name}
-              p #{item.category.name} $
+              h5(class="card-ttle") #{item.item_name}
+              p #{item.category_name} $
               p #{item.price} $
 
   else

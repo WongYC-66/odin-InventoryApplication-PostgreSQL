@@ -2,16 +2,16 @@ extends layout
 
 block content
 
-  h1 #{title}: #{item.name}
-  p= item.supplier.name
+  h1 #{title}: #{item.item_name}
+  p= item.supplier_name
   p= item.quantity
   p= item.price
-  p= item.category.name
+  p= item.category_name
 
   p Do you really want to delete this Item?
 
   form(method='POST')
     div.form-group
-      input#itemId.form-control(type='hidden', name='itemId', value=item._id )
+      input#itemId.form-control(type='hidden', name='itemId', value=item.item_id )
 
     button.btn.btn-primary(type='submit') Delete

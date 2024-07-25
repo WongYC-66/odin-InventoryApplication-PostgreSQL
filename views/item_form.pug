@@ -6,17 +6,17 @@ block content
   form(method='POST', encType='multipart/form-data')
     div.form-group
       label(for='name') Name:
-      input#name.form-control(type='text', placeholder='Name of item' name='name' required value=(undefined===item ? '' : item.name) )
+      input#name.form-control(type='text', placeholder='Name of item' name='name' required value=(undefined===item ? '' : item.item_name) )
 
     div.form-group
       label(for='supplier') Supplier:
       select#supplier.form-control(name='supplier' required)
         option(value='') --Please select an supplier--
         for supplier in suppliers
-          if item && supplier._id.toString()=== item.supplier._id.toString()
-            option(value=supplier._id selected) #{supplier.name}
+          if item && (supplier.supplier_id.toString() === item.supplier_id.toString())
+            option(value=supplier.supplier_id selected) #{supplier.supplier_name}
           else
-            option(value=supplier._id) #{supplier.name}
+            option(value=supplier.supplier_id) #{supplier.supplier_name}
 
     div.form-group
       label(for='quantity') Quantity:
@@ -31,16 +31,16 @@ block content
       select#category.form-control(name='category' required)
         option(value='') --Please select an category--
         for category in categories
-          if item && category._id.toString()=== item.category._id.toString()
-            option(value=category._id selected) #{category.name}
+          if item && category.category_id.toString() === item.category_id.toString()
+            option(value=category.category_id selected) #{category.category_name}
           else
-            option(value=category._id) #{category.name}
+            option(value=category.category_id) #{category.category_name}
 
     div.form-group 
       label(for='uploadImage') Photo: 
       input#uploadImage.form-control(type='file', name='uploadImage')
       label(for='imageUrl') Or image Url: 
-      input#imageUrl.form-control(type='url', name='imageUrl' value =(undefined===item? '' : item.imgUrl || ''))
+      input#imageUrl.form-control(type='url', name='imageUrl' value =(undefined===item? '' : item.imgurl || ''))
 
     hr
     button.btn.btn-primary(type='submit') Submit

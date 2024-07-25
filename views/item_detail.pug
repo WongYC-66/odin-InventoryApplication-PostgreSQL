@@ -1,14 +1,14 @@
 extends layout
 
 block content
-  h1 Item: #{item.name}
-  img(src=item.imgUrl, alt="No photo")
+  h1 Item: #{item.item_name}
+  img(src=item.imgurl, alt="No photo")
   p #[strong Supplier: ]
-    a(href=item.supplier.url) #{item.supplier.name}
+    a(href=item.supplier_url) #{item.supplier_name}
   p #[strong Quantity:] #{item.quantity}
   p #[strong Price:] #{item.price}$
   p #[strong Category: ]
-   a(href=item.category.url) #{item.category.name}
+   a(href=item.category_url) #{item.category_name}
   
   hr
   p
