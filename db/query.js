@@ -210,7 +210,7 @@ exports.saveOneCategory = async (category) => {
     return rows[0].category_id
 }
 
-exports.deleteOneSupplierById = async (category_id) => {
+exports.deleteOneCategoryById = async (category_id) => {
     let { rows } = await pool.query(`
         DELETE  
         FROM category

@@ -8,7 +8,7 @@ const asyncHandler = require("express-async-handler");
 exports.supplier_list = asyncHandler(async (req, res, next) => {
   const allSuppliers = await db.getAllSupplier()
 
-  console.log(allSuppliers)
+  // console.log(allSuppliers)
 
   res.render("supplier_list",
     {
