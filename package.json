@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "populateDB" : "node ./db/populatedb",
+    "populateDB": "node ./db/populatedb",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=express-locallibrary-tutorial:* npm run devstart"
   },
@@ -18,7 +18,6 @@
     "express-fileupload": "^1.5.0",
     "express-validator": "^7.1.0",
     "http-errors": "~1.6.3",
-    "mongoose": "^8.4.3",
     "morgan": "~1.9.1",
     "pg": "^8.12.0",
     "pug": "^3.0.3"
