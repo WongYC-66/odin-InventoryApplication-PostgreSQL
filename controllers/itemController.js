@@ -224,7 +224,7 @@ exports.item_update_post = [
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
-
+    
     // Create a Item object with escaped/trimmed data and old id.
     const item = {
       item_name: req.body.name,
@@ -232,9 +232,12 @@ exports.item_update_post = [
       quantity: req.body.quantity,
       price: req.body.price,
       category_id: req.body.category,
-      imgurl: req.body.imgUrl || '',
+      imgurl: req.body.imageUrl || '',
       item_id: req.params.id // This is required, for query
     };
+    console.log(req.body)
+
+    console.log(item)
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.

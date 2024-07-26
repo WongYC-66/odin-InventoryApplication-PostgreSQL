@@ -1,2 +1,4 @@
 # Odin-InventoryApplication
-A simple full-stack application to CRUD with mongoDB
+A simple full-stack application to CRUD with postgreSQL, using Express + Cloudinary
+
+Live demo : 
