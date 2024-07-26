@@ -1,9 +1,5 @@
 const db = require('../db/query.js')
 
-
-const Category = require("../models/category");
-const Item = require("../models/item");
-
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 
