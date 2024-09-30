@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "populateDB": "node ./db/populatedb",
     "devstart": "nodemon ./bin/www",
-    "serverstart": "DEBUG=express-locallibrary-tutorial:* npm run devstart"
+    "serverstart": "DEBUG=odin-inventoryapplication-postgresql:* npm run devstart"
   },
   "dependencies": {
     "cloudinary": "^2.2.0",
