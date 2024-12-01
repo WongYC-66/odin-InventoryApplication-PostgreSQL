@@ -5,7 +5,7 @@ A simple full-stack application to CRUD with postgreSQL, using Express + Cloudin
 ![photo](inventory-app.png)
 
 ## Live demo
-- https://odin-inventoryapplication-pgsql.adaptable.app/
+- https://odin-inventoryapplication-postgresql.onrender.com/
 
 ## Tech stack 
 -  Pug / Bootstrap/ Express / PostgreSQL / Cloudinary
